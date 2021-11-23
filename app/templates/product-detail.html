@@ -1,0 +1,25 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+<title>{{ product.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if product%}
+    <h3>{{ product.name }}</h3>
+    <hr/>
+    <div class="row">
+        <div class="col-sm-5">
+            <img src="{{url_for('static', filename = product.image) }}" style="width:100%" alt="{{ product.name }}"/>
+
+        </div>
+        <div class="col-sm-7">
+            <h2>{{product.name}}</h2>
+            <h3>{{ "{0:,.0f} VND".format(product.price) }}</h3>
+            <h4>{{product.description}}</h4>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

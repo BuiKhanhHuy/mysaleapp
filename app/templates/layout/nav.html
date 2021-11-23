@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <div>
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('index') }}">
+                    THẾ GIỚI DI ĐỘNG
+                </a>
+            </li>
+
+            {% for category in categories %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index', category_id = category.id) }}">
+                    {% if category.id == 1 %}
+                    <!-- san pham la dien thoai -->
+                    <i class="mr-sm-1 fas fa-mobile-alt"></i>
+                    {% elif category.id == 2 %}
+                    <!-- san pham la may tinh ban -->
+                    <i class="mr-sm-1 fas fa-tablet-alt"></i>
+                    {% elif category.id == 3 %}
+                    <!-- san pham la desktop -->
+                    <i class="mr-sm-1 fas fa-desktop"></i>
+                    {% elif category.id == 4 %}
+                    <!-- san pham la dong ho thong minh -->
+                    <i class="mr-sm-1 fas fa-clock"></i>
+                    {% endif %}
+
+                    {{category.name}}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <form class="form-inline" action="{{ url_for('index') }}">
+        <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search">
+        <button class="btn btn-warning" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+
+    <div class="ml-auto">
+        <ul class="navbar-nav">
+            {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for ('user_login')}}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+            </li>
+            {% else %}
+             <li class="nav-item">
+               <a class="nav-link" href="">{{ current_user.name }} |</a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for ('logout')}}">Logout</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

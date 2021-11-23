@@ -1,0 +1,16 @@
+{% extends "admin/master.html" %}
+
+{% block body %}
+
+{% if current_user.is_authenticated and current_user.user_role %}
+<div class="container">
+    <h1>Admin</h1>
+    <h2>Username: {{ current_user.username }}</h2>
+    <h2>Email: {{ current_user.email }}</h2>
+    <h2>Full name: {{ current_user.name }}</h2>
+</div>
+{% else %}
+{% include "admin/login-admin.html" %}
+{% endif %}
+
+{% endblock %}

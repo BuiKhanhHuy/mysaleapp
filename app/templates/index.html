@@ -1,0 +1,49 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+<title>Thế giới di động</title>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h2> Danh sách sản phẩm </h2>
+
+    {% if products %}
+    {% if request.args.get("keyword") %}
+    <h4>Kết quả tìm kiếm "{{ request.args.get("keyword")}}"</h4>
+    {% endif %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 p-3">
+            <div class="card p-2">
+                {% if product.image %}
+                <a href="{{ url_for('product_detail', product_id=product.id)}}">
+                    <img class="card-img-top img-fluid" src="{{ url_for('static', filename=product.image) }}"
+                         alt="{{ product.image }}">
+                </a>
+                {% else %}
+                <a href="{{ url_for('product_detail', product_id=product.id)}}">
+                    <img class="card-img-top img-fluid" src="{{ url_for('static', filename='images/default.png') }}">
+                </a>
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title"> {{ product.name }} </h4>
+                    <p class="card-text">{{ "{0:,.0f}".format(product.price) }} VND</p>
+                    <div class="d-flex">
+                        <a href="{{ url_for('product_detail', product_id=product.id)}}" class="btn btn-danger ml-3">Xem chi
+                            tiết</a>
+                        <a href="#" class="btn btn-primary ml-auto mr-3">Mua hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <h4>Sản phẩm không tồn tại!</h4>
+    {% endif %}
+{% endblock %}
