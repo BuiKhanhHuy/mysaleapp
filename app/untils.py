@@ -36,7 +36,15 @@ def check_user(username, password):
         return user
 
 
-def add_user(fullname, username, password, email=None, avatar=None):
-    user = User(name=fullname, email=email, username=username, password=password, avatar=avatar)
+def add_user(fullname, username, email, password, avatar=None):
+    password = hashlib.md5(password.strip().encode("utf-8")).hexdigest()
+    user = User(name=fullname.strip(),  username=username.strip(), email=email.strip(), password=password, avatar=avatar)
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        return False
+    else:
+        return True
+
+

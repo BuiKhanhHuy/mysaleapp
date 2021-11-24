@@ -1,18 +1,25 @@
 <div class="container">
-    <h2 class="text-center text-danger">Login</h2>
-    <form action="{{ url_for('admin_login')}}" class="was-validated" method="post">
-        <div class="form-group">
-            <label for="uname">Username:</label>
-            <input type="text" class="form-control" id="uname" placeholder="Enter username" name="uname" required>
-            <div class="valid-feedback">Valid.</div>
-            <div class="invalid-feedback">Please fill out this field.</div>
-        </div>
-        <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd" required>
-            <div class="valid-feedback">Valid.</div>
-            <div class="invalid-feedback">Please fill out this field.</div>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+
+    <div class="py-3">
+        <h2 class="text-center text-danger">Đăng nhập</h2>
+        <form action="{{ url_for('admin_login') }}" class="was-validated" method="post">
+            <div class="form-group">
+                <label for="uname">Tên người dùng</label>
+                <input type="text" class="form-control" id="uname" placeholder="Nhập tên người dùng" name="uname"
+                       required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Tên người dùng không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label for="pwd">Mật khẩu</label>
+                <input type="password" class="form-control" id="pwd" placeholder="Nhập mật khẩu" name="pswd" required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Mật khẩu không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-danger px-4">Đăng nhập</button>
+            </div>
+        </form>
+    </div>
     </form>
 </div>

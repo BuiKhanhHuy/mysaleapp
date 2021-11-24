@@ -1,5 +1,7 @@
 import hashlib
 
+import cloudinary.uploader
+
 from app import app, login
 from flask import render_template, request, url_for, redirect
 from flask_login import login_user, logout_user
@@ -14,16 +16,15 @@ def index():
     from_price = request.args.get("from_price")
     to_price = request.args.get("to_price")
 
-    categories = untils.load_categories()
     products = untils.load_products(category_id, keyword, from_price, to_price)
-    return render_template("index.html", categories=categories, products=products)
+    return render_template("index.html", products=products)
 
 
 @app.route("/products/<int:product_id>")
 def product_detail(product_id):
     categories = untils.load_categories()
     product = untils.get_product_by_id(product_id)
-    return render_template("product-detail.html", categories=categories, product=product)
+    return render_template("product-detail.html", product=product)
 
 
 @login.user_loader
@@ -56,25 +57,41 @@ def user_login():
 
 @app.route("/user-register", methods=["get", "post"])
 def register():
+    error = ""
     if request.method == "POST":
-        fullname = request.form.get("fullname")
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        confirm = request.form.get("confirm")
-        password = hashlib.md5(password.strip().encode("utf-8")).hexdigest()
-        confirm = hashlib.md5(confirm.strip().encode("utf-8")).hexdigest()
-        avatar = ""
-        if password == confirm:
-            untils.add_user(fullname, username, email, password, avatar)
-            return redirect(url_for('user_login'))
-    return render_template("register.html")
+        try:
+            fullname = request.form.get("fname")
+            username = request.form.get("uname")
+            email = request.form.get("email")
+            password = request.form.get("password")
+            confirm = request.form.get("confirm")
+            file = request.files.get("avatar")
+            if file:
+                upload_result = cloudinary.uploader.upload(file)
+                avatar = upload_result.get("secure_url")
+            if password.__eq__(confirm):
+                 if untils.add_user(fullname, username, email, password, avatar):
+                     return redirect(url_for('user_login'))
+                 else:
+                     error = "Đăng kí người dùng không thành công!"
+            else:
+                error = "Mật khẩu xác nhận không khớp!"
+        except Exception as err:
+            error = err
+    return render_template("register.html", error=error)
 
 
 @app.route("/user-logout")
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@app.context_processor
+def common_response():
+    return {
+        "categories": untils.load_categories()
+    }
 
 
 if __name__ == "__main__":

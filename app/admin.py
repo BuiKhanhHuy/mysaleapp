@@ -17,7 +17,8 @@ class GeneralView(ModelView):
 
 class AuthenticatedModelView(ModelView):
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.user_role
+        if current_user.is_authenticated and current_user.user_role == UserRole.ADMIN:
+            return True
 
 
 class UserView(GeneralView, AuthenticatedModelView):
@@ -34,6 +35,7 @@ class ProductView(GeneralView, AuthenticatedModelView):
     column_searchable_list = ["id", "name", "price", "description"]
     column_filters = ["id", "name", "price", "description"]
 
+
 class LogoutView(BaseView):
     @expose("/")
     def index(self):
@@ -41,7 +43,8 @@ class LogoutView(BaseView):
         return redirect("/admin")
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.user_role
+        if current_user.is_authenticated and current_user.user_role == UserRole.ADMIN:
+            return True
 
 
 admin.add_view(UserView(User, db.session))

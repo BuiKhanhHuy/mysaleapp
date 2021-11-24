@@ -1,32 +1,60 @@
 {% extends "layout/base.html" %}
 
 {% block title %}
+    <title>Đăng kí</title>
 {% endblock %}
 
 {% block content %}
-<form action="{{ url_for('register')}}" method="post">
-    <h2 class="text-danger text-center p-3"> Đăng ký</h2>
-    <div class="form-group">
-        <label for="fullname">Họ và tên: </label>
-        <input type="text" class="form-control" placeholder="Nhập họ và tên" id="fullname" name="fullname">
+    <div class="py-4">
+        <h2 class="text-danger text-center">Đăng ký</h2>
+        {% if error %}
+            <div class="alert alert-danger">
+                <strong>Lỗi!</strong> <span>{{ error }}.</span>
+            </div>
+        {% endif %}
+        <form action="{{ url_for('register') }}" method="post" class="was-validated" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="fname">Họ và tên</label>
+                <input type="text" class="form-control" id="fname" placeholder="Nhập họ và tên" name="fname" required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Họ và tên không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label for="uname">Tên người dùng</label>
+                <input type="text" class="form-control" id="uname" placeholder="Nhập tên người dùng" name="uname"
+                       required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Tên người dùng không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="@example" name="email" required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Email phải đúng định dạng và không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu" name="password"
+                       required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Mật khẩu không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label for="confirm">Xác nhận mật khẩu</label>
+                <input type="password" class="form-control" id="confirm" placeholder="Nhập lại mật khẩu" name="confirm"
+                       required>
+                <div class="valid-feedback">Hợp lệ.</div>
+                <div class="invalid-feedback">Mật khẩu xác nhận không được để trống.</div>
+            </div>
+            <div class="form-group">
+                <label>Chọn ảnh đại diện</label>
+                <div>
+                    <input type="file" name="avatar">
+                </div>
+            </div>
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-danger px-4">Đăng Ký</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="username">Username: </label>
-        <input type="text" class="form-control" placeholder="Nhập tên người dùng" id="username" name="username">
-    </div>
-    <div class="form-group">
-        <label for="fullname">Email: </label>
-        <input type="email" class="form-control" placeholder="Nhập email" id="email" name="email">
-    </div>
-    <div class="form-group">
-        <label for="password">Mật khẩu:</label>
-        <input type="password" class="form-control" placeholder="Nhập mật khẩu" id="password" name="password">
-    </div>
-    <div class="form-group">
-        <label for="confirm">Nhập lại mật khẩu</label>
-        <input type="password" class="form-control" placeholder="Xác nhận mật khẩu" id="confirm" name="confirm">
-    </div>
-
-    <button type="submit" class="btn btn-danger">Đăng ký</button>
-</form>
 {% endblock %}

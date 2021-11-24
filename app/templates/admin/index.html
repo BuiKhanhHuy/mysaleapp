@@ -2,7 +2,7 @@
 
 {% block body %}
 
-{% if current_user.is_authenticated and current_user.user_role %}
+{% if current_user.is_authenticated and current_user.user_role.value == 1 %}
 <div class="container">
     <h1>Admin</h1>
     <h2>Username: {{ current_user.username }}</h2>

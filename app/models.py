@@ -1,8 +1,14 @@
 from app import db
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, Enum, ForeignKey, or_
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from datetime import datetime
+from enum import Enum as UserEnum
+
+
+class UserRole(UserEnum):
+    ADMIN = 1
+    USER = 2
 
 
 class BaseModel(db.Model):
@@ -18,7 +24,7 @@ class User(BaseModel, UserMixin):
     active = Column(Boolean, default=1)
     avatar = Column(String(100))
     joined_date = Column(DateTime, default=datetime.now())
-    user_role = Column(Integer, default=0)
+    user_role = Column(Enum(UserRole), default=UserRole.USER)
     products = relationship('Product', backref='user', lazy=True)
     receipts = relationship('Receipt', backref='user', lazy=True)
 
@@ -63,4 +69,3 @@ class Receipt(BaseModel):
 
 if __name__ == "__main__":
     pass
-
