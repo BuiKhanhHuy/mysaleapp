@@ -4,9 +4,26 @@
     <title>Đăng nhập</title>
 {% endblock %}
 
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand text-warning" href="{{ url_for('index') }}">THẾ GIỚI DI ĐỘNG</a>
+        <span class="text-light">Đăng nhập</span>
+        <a href="#" class="ml-auto text-white">Bạn cần trợ giúp?</a>
+    </nav>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
 {% block content %}
     <div class="py-4">
         <h2 class="text-center text-danger">Đăng nhập</h2>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Lỗi!</strong> {{ error }}
+            </div>
+        {% endif %}
         <form action="{{ url_for('user_login') }}" class="was-validated" method="post">
             <div class="form-group">
                 <label for="uname">Tên người dùng</label>

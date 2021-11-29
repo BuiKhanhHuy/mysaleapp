@@ -4,7 +4,23 @@
     <title>Đăng kí</title>
 {% endblock %}
 
+{% block js %}
+    <script src="{{ url_for('static', filename='js/register.js') }}" async></script>
+{% endblock %}
+
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand text-warning" href="{{ url_for('index') }}">THẾ GIỚI DI ĐỘNG</a>
+        <span class="text-light">Đăng kí</span>
+        <a href="#" class="ml-auto text-white">Bạn cần trợ giúp?</a>
+    </nav>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
 {% block content %}
+
     <div class="py-4">
         <h2 class="text-danger text-center">Đăng ký</h2>
         {% if error %}
@@ -48,10 +64,12 @@
             </div>
             <div class="form-group">
                 <label>Chọn ảnh đại diện</label>
-                <div>
-                    <input type="file" name="avatar">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile" name="avatar">
+                    <label class="custom-file-label" for="customFile">Chọn ảnh</label>
                 </div>
             </div>
+
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-danger px-4">Đăng Ký</button>
             </div>

@@ -1,0 +1,120 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+    <title>Edit Profile</title>
+{% endblock %}
+
+{% block js %}
+    <script src="{{ url_for('static', filename='js/edit-profile.js') }}" async></script>
+{% endblock %}
+
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand text-warning" href="{{ url_for('index') }}">THẾ GIỚI DI ĐỘNG</a>
+        <span class="text-light">Chỉnh sửa hồ sơ</span>
+        <a href="#" class="ml-auto text-white">Bạn cần trợ giúp?</a>
+    </nav>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="py-4">
+        <h2 class="text-danger text-center">{% if not user %} Đổi mật khẩu {% else %} Chỉnh sửa hồ sơ {% endif %}</h2>
+        {% if error %}
+            <div class="alert alert-danger">
+                <strong>Lỗi!</strong> <span>{{ error }}.</span>
+            </div>
+        {% endif %}
+        <!-- thay doi mat khau -->
+        {% if not user %}
+            <form action="{{ url_for('user_edit_profile', user_id=user_id, change_password=1) }}" method="post"
+                  class="was-validated" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="oldpassword">Mật khẩu cũ</label>
+                    <input type="password" class="form-control" id="oldpassword" placeholder="Nhập mật khẩu cũ"
+                           name="oldpassword"
+                           required>
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Mật khẩu cũ không được để trống.</div>
+                </div>
+                <div class="form-group">
+                    <label for="newpassword">Mật khẩu mới</label>
+                    <input type="password" class="form-control" id="newpassword" placeholder="Nhập mật khẩu mới"
+                           name="newpassword"
+                           required>
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Mật khẩu mới không được để trống.</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm">Xác nhận mật khẩu mới</label>
+                    <input type="password" class="form-control" id="confirm" placeholder="Nhập mật khẩu xác nhận"
+                           name="confirm"
+                           required>
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Mật khẩu xác nhận không được để trống.</div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-danger px-4">Lưu thay đổi</button>
+                </div>
+            </form>
+
+            <!-- chinh sua thong tin user -->
+        {% else %}
+            <form action="{{ url_for('user_edit_profile', user_id=user_id) }}" method="post" class="was-validated"
+                  enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="fname">Họ và tên</label>
+                    <input type="text" class="form-control" id="fname" placeholder="Nhập họ và tên" name="fname"
+                           required value="{{ user.name }}">
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Họ và tên không được để trống.</div>
+                </div>
+                <div class="form-group">
+                    <label for="uname">Tên người dùng</label>
+                    <input type="text" class="form-control" id="uname" placeholder="Nhập tên người dùng" name="uname"
+                           required value="{{ user.username }}">
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Tên người dùng không được để trống.</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="@example" name="email" required
+                           value="{{ user.email }}">
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Email phải đúng định dạng và không được để trống.</div>
+                </div>
+                <div class="form-group">
+                    <label>Chọn ảnh đại diện</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile" name="avatar">
+                        <label class="custom-file-label" for="customFile">Chọn ảnh</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    {% if user.avatar %}
+                        <img class="border border-success" src="{{ user.avatar }}" id="avt-edit"
+                             width="100px" height="100px">
+                    {% else %}
+                        <img class="border border-success bg-light" src="{{ url_for('static', filename='images/avatars/avt-default-1.png') }}"
+                             width="100px" height="100px">
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu xác nhận</label>
+                    <input type="password" class="form-control" id="password"
+                           placeholder="Nhập mật khẩu xác nhận thay đổi"
+                           name="password"
+                           required>
+                    <div class="valid-feedback">Hợp lệ.</div>
+                    <div class="invalid-feedback">Mật khẩu không được để trống.</div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-danger px-4">Lưu thay đổi</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

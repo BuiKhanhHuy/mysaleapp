@@ -1,8 +1,15 @@
 <div class="container">
-
     <div class="py-3">
         <h2 class="text-center text-danger">Đăng nhập</h2>
         <form action="{{ url_for('admin_login') }}" class="was-validated" method="post">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Lỗi!</strong> {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
             <div class="form-group">
                 <label for="uname">Tên người dùng</label>
                 <input type="text" class="form-control" id="uname" placeholder="Nhập tên người dùng" name="uname"

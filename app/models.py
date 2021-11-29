@@ -22,7 +22,7 @@ class User(BaseModel, UserMixin):
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     active = Column(Boolean, default=1)
-    avatar = Column(String(100))
+    avatar = Column(String(255))
     joined_date = Column(DateTime, default=datetime.now())
     user_role = Column(Enum(UserRole), default=UserRole.USER)
     products = relationship('Product', backref='user', lazy=True)
@@ -43,7 +43,7 @@ class Category(BaseModel):
 class Product(BaseModel):
     name = Column(String(255), nullable=False)
     description = Column(String(255))
-    image = Column(String(100))
+    image = Column(String(255))
     price = Column(Float, default=0)
     category_id = Column(Integer, ForeignKey('category.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
