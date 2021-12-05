@@ -24,7 +24,7 @@
                 <strong>Lỗi!</strong> {{ error }}
             </div>
         {% endif %}
-        <form action="{{ url_for('user_login') }}" class="was-validated" method="post">
+        <form class="was-validated" method="post">
             <div class="form-group">
                 <label for="uname">Tên người dùng</label>
                 <input type="text" class="form-control" id="uname" placeholder="Nhập tên người dùng" name="uname"

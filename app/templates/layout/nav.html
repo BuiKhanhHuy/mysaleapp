@@ -16,12 +16,10 @@
             </button>
         </form>
 
-        <form class="d-flex">
-            <button class="btn btn-outline-light" type="submit">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="badge bg-dark text-warning ms-1 rounded-pill">0</span>
-            </button>
-        </form>
+        <a href="{{ url_for('cart') }}" class="btn btn-outline-light">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge bg-dark text-warning ms-1 rounded-pill" id="quantity-cart">{{ total_cart[0] }}</span>
+        </a>
 
         <ul class="navbar-nav ml-auto">
             {% if not current_user.is_authenticated %}
@@ -44,8 +42,11 @@
                         {{ current_user.name }}
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ url_for('user_edit_profile', user_id = current_user.id, change_password=1) }}">Đổi mật khẩu</a>
-                        <a class="dropdown-item" href="{{ url_for('user_edit_profile', user_id = current_user.id) }}">Chỉnh sửa</a>
+                        <a class="dropdown-item"
+                           href="{{ url_for('user_edit_profile', user_id = current_user.id, change_password=1) }}">Đổi
+                            mật khẩu</a>
+                        <a class="dropdown-item" href="{{ url_for('user_edit_profile', user_id = current_user.id) }}">Chỉnh
+                            sửa</a>
                         <a class="dropdown-item text-danger" href="{{ url_for('logout') }}"> Đăng xuất </a>
                     </div>
                 </li>

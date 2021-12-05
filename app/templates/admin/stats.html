@@ -1,0 +1,147 @@
+{% extends "admin/master.html" %}
+
+{% block head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="alert alert-dark text-uppercase">Thống kê doanh thu sản phẩm</div>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Doanh thu</th>
+            </tr>
+            {% for stats in product_sale_staticstics %}
+                <tr>
+                    <td>{{ stats[0] }}</td>
+                    <td>{{ stats[1] }}</td>
+                    {% if stats[2] %}
+                        <td class="text-right">{{ '{0:,.0f}'.format(stats[2]) }} VND</td>
+                    {% else %}
+                        <td class="text-right">0 VND</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <canvas id="productSaleStatsChart"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<div class="alert alert-dark text-uppercase">Thống kê doanh thu theo tháng</div>
+<div class="d-flex">
+    <div class="mr-3 text-danger font-weight-bold">Lọc theo tháng:</div>
+    {% for month in range(1, 13) %}
+        <div class="custom-control custom-checkbox mb-3 mr-3">
+            <input type="checkbox" class="custom-control-input month" id="monthCheck{{ month }}"
+                   name="example{{ month }}" value="{{ month }}"
+                    {% for x, y in product_sale_statistics_month %}
+                        {% if month.__eq__(x) %}
+                   checked="checked"
+                        {% endif %}
+                    {% endfor %}
+                   onclick="month_filter()">
+            <label class="custom-control-label" for="monthCheck{{ month }}">{{ month }}</label>
+        </div>
+    {% endfor %}
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <tr>
+                <th>Tháng</th>
+                <th>Doanh thu</th>
+            </tr>
+            {% for stats_month in product_sale_statistics_month %}
+                <tr>
+                    <td>{{ stats_month[0] }}</td>
+                    {% if stats_month[1] %}
+                        <td class="text-right">{{ '{0:,.0f}'.format(stats_month[1]) }} VND</td>
+                    {% else %}
+                        <td class="text-right">0 VND</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <canvas id="monthStatsChart"></canvas>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    let type1 = 'bar', type2 = 'line'
+    let labels1 = [], labels2 = []
+    let label1 = 'Biểu đồ thống kê doanh thu sản phẩm'
+    let label2 = 'Biểu đồ thống kê doanh thu theo tháng'
+    let data1 = [], data2 = []
+    let color1 = [], color2 = []
+    let borderColor1 = [], borderColor2 = []
+
+    {% for stats in  product_sale_staticstics %}
+        {% if stats[2] %}
+            data1.push({{ stats[2] }})
+            labels1.push('{{ stats[1] }}')
+            r = Math.random() * 255
+            g = Math.random() * 255
+            b = Math.random() * 255
+
+            color1.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+            borderColor1.push(`rgba(${r}, ${g}, ${b}, 1)`)
+        {% endif %}
+    {% endfor %}
+
+    {% for stats_month in product_sale_statistics_month %}
+        {% if stats_month[1] %}
+            data2.push({{ stats_month[1] }})
+            labels2.push('{{ stats_month[0] }}')
+            r = Math.random() * 255
+            g = Math.random() * 255
+            b = Math.random() * 255
+
+            color2.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+            borderColor2.push(`rgba(${r}, ${g}, ${b}, 1)`)
+        {% endif %}
+    {% endfor %}
+
+    const ctx1 = document.getElementById('productSaleStatsChart').getContext('2d')
+    const ctx2 = document.getElementById('monthStatsChart').getContext('2d')
+    customCharts(ctx1, type1, labels1, label1, data1, color1, borderColor1)
+    customCharts(ctx2, type2, labels2, label2, data2, color2, borderColor2)
+
+    function customCharts(ctx, type, labels, label, data, colors, borderColors) {
+        const myChart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

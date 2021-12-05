@@ -1,6 +1,6 @@
 import cloudinary.uploader
-from flask import render_template, request, url_for, redirect, flash
-from flask_login import login_user, logout_user
+from flask import render_template, request, url_for, redirect, flash, session, jsonify
+from flask_login import login_user, logout_user, login_required
 from app import app, login
 from app import untils
 from app.admin import *
@@ -15,8 +15,10 @@ def index():
     to_price = request.args.get("to_price")
     page = int(request.args.get("page", 1))
 
-    products = untils.load_products(category_id, keyword, from_price, to_price, page)
-    number_of_page = math.ceil(untils.count_product() / app.config["PAGE_SIZE"])
+    products = untils.load_products(
+        category_id, keyword, from_price, to_price, page)
+    number_of_page = math.ceil(
+        untils.count_product() / app.config["PAGE_SIZE"])
     return render_template("index.html", products=products, number_of_page=number_of_page)
 
 
@@ -36,7 +38,7 @@ def admin_login():
     if request.method == "POST":
         username = request.form.get("uname")
         password = request.form.get("pswd", "")
-        user = untils.check_user(username, password)
+        user = untils.check_user(username, password, user_role=UserRole.ADMIN)
         if user:
             login_user(user=user)
         else:
@@ -53,7 +55,8 @@ def user_login():
         user = untils.check_user(username, password)
         if user:
             login_user(user=user)
-            return redirect(url_for('index'))
+            next = request.args.get('next', 'index')
+            return redirect(url_for(next))
         else:
             error = "Tên đăng nhập hoặc mật khẩu không chính xác."
     return render_template("login.html", error=error)
@@ -71,12 +74,14 @@ def register():
             confirm = request.form.get("confirm")
             file = request.files.get("avatar")
             if file:
-                upload_result = cloudinary.uploader.upload(file, folder="Avatars/")
+                upload_result = cloudinary.uploader.upload(
+                    file, folder="Avatars/")
                 avatar = upload_result.get("secure_url")
             else:
                 avatar = None
             if password.__eq__(confirm):
-                error = untils.add_user(fullname, username, email, password, avatar)
+                error = untils.add_user(
+                    fullname, username, email, password, avatar)
                 if error is None:
                     return redirect(url_for('user_login'))
             else:
@@ -126,20 +131,72 @@ def user_edit_profile():
                 username = request.form.get("uname")
                 email = request.form.get("email")
                 avatar = request.form.get("avatar")
-                error = untils.change_user(user_id, fullname=fullname, username=username, email=email, avatar=avatar)
+                error = untils.change_user(
+                    user_id, fullname=fullname, username=username, email=email, avatar=avatar)
             else:
                 error = "Mật khẩu xác nhận không đúng."
 
     return render_template("edit-profile.html", user_id=user_id, user=user, error=error)
 
 
+@app.route("/api/cart", methods=["post"])
+def add_to_cart():
+    if "cart" not in session:
+        session["cart"] = {}
+    cart = session["cart"]
+    data = request.json
+
+    id = str(data.get("id"))
+    name = data.get("name")
+    description = data.get("description")
+    image = data.get("image")
+    price = data.get("price")
+
+    if id in cart:
+        cart[id]["quantity"] = cart[id]["quantity"] + 1
+    else:
+        cart[id] = {
+            "id": id,
+            "name": name,
+            "description": description,
+            "image": image,
+            "price": price,
+            "quantity": 1
+        }
+    session['cart'] = cart
+    total_quantity, total_price = untils.total_quantity_and_price(cart)
+
+    return jsonify({
+        "total_quantity": total_quantity,
+        "total_price": total_price
+    })
+
+
+@app.route("/cart")
+def cart():
+    total_quantity, total_price = untils.total_quantity_and_price(
+        session.get("cart"))
+    return render_template("payment.html", total_quantity=total_quantity, total_price=total_price)
+
+
+@app.route("/api/pay", methods=["post"])
+@login_required
+def pay():
+    try:
+        untils.add_receipt(session.get('cart'))
+        del session['cart']
+        return jsonify({"code": 200})
+    except:
+        return jsonify({"code": 400})
+
+
 @app.context_processor
 def common_response():
     return {
-        "categories": untils.load_categories()
+        "categories": untils.load_categories(),
+        'total_cart': untils.total_quantity_and_price(session.get('cart'))
     }
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-

@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, Enum, ForeignKey, or_
+from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, Enum, ForeignKey
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from datetime import datetime
@@ -62,7 +62,7 @@ class ReceiptDetail(BaseModel):
 
 class Receipt(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
-    paid_date = Column(DateTime, nullable=False)
+    paid_date = Column(DateTime, default=datetime.now(), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     receipt_details = relationship('ReceiptDetail', backref='receipt', lazy=True)
 
