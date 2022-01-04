@@ -124,7 +124,7 @@ def add_receipt(cart):
     db.session.add(receipt)
     for product in cart.values():
         receipt_detail = ReceiptDetail(
-            product_id=product.get('id'),
+            product_id=int(product.get('id')),
             receipt=receipt,
             unit_price=product.get('price'),
             quantity=product.get('quantity')

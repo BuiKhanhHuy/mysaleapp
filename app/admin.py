@@ -1,3 +1,5 @@
+from wtforms import PasswordField
+
 from app import app, db, untils
 from flask import redirect, request
 from flask_admin.contrib.sqla import ModelView
@@ -22,10 +24,13 @@ class AuthenticatedModelView(ModelView):
 
 
 class UserView(GeneralView, AuthenticatedModelView):
-    column_exclude_list = ["password", "avatar"]
+    # column_exclude_list = ["password", "avatar"]
     column_searchable_list = ["id", "email", "username"]
     column_filters = ["id", "email", "name", "username",
                       "active", "joined_date", "user_role"]
+    column_descriptions = dict(
+        email='First and Last name'
+    )
 
 
 class CategoryView(GeneralView, AuthenticatedModelView):

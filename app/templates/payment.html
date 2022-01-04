@@ -7,9 +7,9 @@
 {% block content %}
     <h2 class="text-center p-3 text-danger">Giỏ hàng</h2>
     <div class="mx-5 my-3">
-        {% if session.get('cart') and session.get('cart') %}
+        {% if 'cart' in session and session.get('cart') %}
             {% for product in session['cart'].values() %}
-                <div class="row p-2 my-3 bg-light rounded">
+                <div class="row p-2 my-3 bg-light rounded" id="item{{ product.id }}">
                     <div class="col-sm-2">
                         <img class="img-fluid"
                              src="{{ product.image }}"
@@ -19,28 +19,32 @@
                         <h4 class="p-1">{{ product.name }}</h4>
                         <div class="p-1">{{ product.description }}</div>
                         <h5 class="text-danger p-1"> {{ ("{0:,.0f}").format(product.price) }} VND </h5>
-                        <input class="w-25" min="0" max="1000" value="{{ product.quantity }}" type="number">
+                        <input class="w-25" min="1" max="1000" value="{{ product.quantity }}" type="number"
+                        onchange="updateNumberProductCart(this, {{ product.id }}, {{ product.price }})">
                     </div>
                     <div class="col-sm-2 p-0 d-flex flex-column mt-auto ml-auto">
-                        <div class="pr-2 text-right text-dark">
+                        <div id="item-quan{{ product.id }}" class="pr-2 text-right text-dark">
                             x{{ product.quantity }}
                         </div>
-                        <div class="p-2 text-right text-dark">{{ '{0:,.0f}'.format(product.quantity *  product.price) }}
+                        <div id="item-pri{{ product.id }}" class="p-2 text-right text-dark">{{ '{0:,.0f}'.format(product.quantity *  product.price) }}
                             VND
                         </div>
-                        <a class="p-2 text-right text-danger" href="#">Xóa khỏi giỏ hàng</a>
+                        <button type="button" class="btn btn-danger" onclick="deleteItem({{ product.id }})">
+                            Xóa khỏi giỏ hàng
+                        </button>
                     </div>
                 </div>
             {% endfor %}
-            <div class="alert alert-danger text-right">
-                <h6>x {{ total_quantity }}</h6>
-                <h5>{{ '{0:,.0f}'.format(total_price) }} VND</h5>
+            <div class="alert alert-primary text-right">
+                <h6 id="total-quan">x {{ total_quantity }}</h6>
+                <h5 id="total-pri">{{ '{0:,.0f}'.format(total_price) }} VND</h5>
             </div>
             <div class="d-flex">
                 {% if current_user.is_authenticated %}
-                    <input type="button" class="btn btn-danger w-25 ml-auto" value="Thanh toán" onclick="pay()">
+                    <input type="button" class="btn btn-primary w-25 ml-auto" value="Thanh toán" onclick="pay()">
                 {% else %}
-                    <a href="{{ url_for('user_login', next='cart') }}" type="button" class="btn btn-danger w-25 ml-auto">Thanh toán</a>
+                    <a href="{{ url_for('user_login', next='cart') }}" type="button"
+                       class="btn btn-info w-25 ml-auto">Thanh toán</a>
                 {% endif %}
             </div>
         {% else %}

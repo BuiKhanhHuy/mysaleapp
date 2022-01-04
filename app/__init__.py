@@ -10,6 +10,8 @@ app = Flask(__name__)
 app.secret_key = ":>\x8dT3H\xa3\xc4\x90[\x95\xf0\xcd\xd2X\x1b"
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456789@localhost/mysaledb?charset=utf8mb4"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config['FLASK_ADMIN_SWATCH'] = 'United'
+# app.config["FLASK_ADMIN_FLUID_LAYOUT"] = True
 
 
 db = SQLAlchemy(app=app)

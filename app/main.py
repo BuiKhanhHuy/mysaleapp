@@ -190,6 +190,38 @@ def pay():
         return jsonify({"code": 400})
 
 
+@app.route("/api/delete-cart", methods=["delete"])
+def delete_cart():
+    if 'cart' in session:
+        cart = session.get('cart')
+        data = request.json
+        product_id = str(data.get('id'))
+        if product_id in cart:
+            del cart[product_id]
+            session['cart'] = cart
+            total_quantity, total_price = untils.total_quantity_and_price(
+                session.get("cart"))
+            return jsonify({'error': 'Xóa sản phẩm thành công.', 'code': 200,
+                            'total_quantity': total_quantity, 'total_price': total_price})
+    return jsonify({'error': 'Xóa sản phẩm không thành công.', 'code': 500})
+
+
+@app.route("/api/update-cart", methods=["put"])
+def update_cart():
+    if 'cart' in session:
+        cart = session.get('cart')
+        data = request.json
+        product_id = str(data.get('id'))
+        if product_id in cart:
+            cart[product_id]['quantity'] = data.get('quantity')
+            session['cart'] = cart
+            total_quantity, total_price = untils.total_quantity_and_price(
+                session.get("cart"))
+            return jsonify({'error': 'update thành công!', 'code': 200,
+                            'total_quantity': total_quantity, 'total_price': total_price})
+    return jsonify({'error': 'update không thành công!', 'code': 500})
+
+
 @app.context_processor
 def common_response():
     return {
